@@ -1,161 +1,146 @@
-Flow of Project
+Postify Backend
 
-conn.js
-When the application starts, it connects to the MongoDB database using Mongoose..
-index.js
-The Express server is initialized.
-Middleware for handling CORS and parsing JSON requests is set up.
-The database connection is established by calling connectToMongogo.
-The server listens on a specified port for incoming requests.
-Route files for authentication, discussion, comments, and likes are included and mounted on specific API paths.
-middleware/auth.js
-Middleware checks if incoming requests have a valid JWT token.
-It verifies the token and attaches the user information to the request object.
-Routes requiring authentication use this middleware to protect them.
-Routes and Schemas
-routes/auth.js
-Register User:
-Endpoint for new users to register.
-Require user details, hashes the password, from the body and saves the user to the database.
-Generates JWT token
-Login User:
-Endpoint for users to log in.
-Validates credentials and generates a token upon successful login.
-Get User Details:
-Protected endpoint that returns user information based on the token.
-Such as name email mobile
-routes/discussion.js
-Create Discussion:
-Endpoint for creating a new discussion.
-Requires user authentication.
-Saves the discussion to the database, linking it to the authenticated user.
-Get Discussions:
-Endpoint for fetching all discussions.
-Can include pagination and filtering options.
-Update Discussion:
-Endpoint for updating a discussion.
-Requires user authentication and checks if the user owns the discussion.
-Delete Discussion:
-Endpoint for deleting a discussion.
-Requires user authentication and checks if the user owns the discussion.
-routes/comment.js
-Add Comment:
-Endpoint for adding a comment to a discussion.
-Requires user authentication.
-Get Comments:
-Endpoint for fetching comments for a specific discussion.
-Delete Comment:
-Endpoint for deleting a comment.
-Requires user authentication and checks if the user owns the comment.
-routes/like.js
-Like Discussion:
-Endpoint for liking a discussion.
-Requires user authentication.
-Like Comment:
-Endpoint for liking a comment.
-Requires user authentication.
-Get Likes:
-Endpoint for getting the like count for a discussion or comment.
+A lightweight social-interaction backend that demonstrates how discussions, comments, and likes are stored and managed like Instagram or Facebook.
+Built with Node.js, Express, and MongoDB, it provides secure user auth and complete interaction features.
+---
 
-Api / Endpoints 
+# 📘 **InstaTalk – Discussion, Comments & Likes API**
 
-There are total 18 apis that I am using for different purposes
+A simple backend project demonstrating how platforms like **Instagram** or **Facebook** store and manage **discussions, comments, and likes** using **Node.js, Express, and MongoDB**.
+This project provides full authentication, discussion threads, user comments, and like/unlike features.
 
-USER
+---
 
-1.http://localhost:5000/api/auth/createuser
-Method-post
-Using this Api for creating the user
-This will take name email mobile password from the user
-2. http://localhost:5000/api/auth/login
-Method-post
-This api is working to login the user 
-One user is logged in a jwt is generated that will be used further for various purposes
-This api takes email or mobile and password
-It checks the bcryptjs password which is encoded during the time of signup
-3.http://localhost:5000/api/auth/getusers
-Method-get
-Header- Auth-token
-Use to find all users
-Protected api
-4.http://localhost:5000/api/auth/updateuser/
-Method-put
-Header- Auth-token
-User can update his/her id using this api 
-Takes all the parameters that are provided at the time of signup
-5.http://localhost:5000/api/auth/deleteuser
-Method-delete
-Header- Auth-token
-User can delete his/her account using this 
-This is also protected i.e no other user can delete another user’s account
-6.http://localhost:5000/api/auth/getuserbyname
-Method-Get
-Header- Auth-token
-Take String of name as user input
-Any one who is using the application can search user by name
+## 🚀 **Project Flow**
 
-Discussion
+### **1. `conn.js`**
 
-1.http://localhost:5000/api/discussion/creatediscussion
-Method-post
-Header auth-token
-Using this Api for creating the discussion
-This will take description, image and tag 
-2.http://localhost:5000/api/discussion/fetchalldiscussions
-Method Get
-Header auth-token
-Fetch all the discussions
-3.http://localhost:5000/api/discussion/updatediscussion/667fd8cfdd8bbd497c6ef416
-Method Put
-Header auth-token
-Update the decisions
-Take description,  img,  tag from user
-4.http://localhost:5000/api/discussion/deletediscussion/667fd943ad0d08428e7fe80a
-Method delete
-Header auth-token
-Use to delete the decisions
-5.http://localhost:5000/api/discussion/fetchdiscussionsbytag
-Method post
-Header auth-token
-Require tag from the body
-Fetch all the discussions
+* Establishes a connection to MongoDB using Mongoose when the server starts.
 
-Comment
+### **2. `index.js`**
 
-1.http://localhost:5000/api/comment/comment/668000522fc1920a3bc2fb33
-Method post
-Header auth-token
-Take the comment form the body 
-Take the comment _id from the url
-2.http://localhost:5000/api/comment/editcomment/668129131ed0f14c402ec570
-Method put
-Header auth-token
-Take _id of comment form url 
-Edit the comment of specific user only
-3.http://localhost:5000/api/comment/comment/668129131ed0f14c402ec570
-Method Delete
-Header auth-token
-Use to delete the comment by taking comment _id
+* Initializes Express server.
+* Sets up CORS and JSON parsing middleware.
+* Connects to MongoDB.
+* Registers all route modules:
 
-Likes
+  * Auth
+  * Discussion
+  * Comments
+  * Likes
 
-1.http://localhost:5000/api/like/likeondiscussion/667fdc7fdcd09b6067150d58
-Method post
-Headed auth-token
-Use to like the specific discussion by taking discussion id from url
-2.http://localhost:5000/api/like/unlikeondiscussion/667fdc7fdcd09b6067150d58
-Use to unlike the discussion
-Method post
-Header auth token
-Take the discussion _id from url
-3.http://localhost:5000/api/like/likeoncomment/668129f31ed0f14c402ec57b
-Method Post
-Header auth-token
-Use to like the specific comment
-4.http://localhost:5000/api/like/unlikeoncomment/668129f31ed0f14c402ec57b
-Method Post
-Header auth-token
-Use to unlike any comment
+### **3. `middleware/auth.js`**
 
+* Verifies JWT tokens in protected routes.
+* Attaches authenticated user data to the request object.
+* Ensures only logged-in users access secured APIs.
 
+---
 
+## 📂 **Routes & Schemas**
+
+### **🔐 Authentication (`routes/auth.js`)**
+
+**Register User**
+
+* Creates a new user.
+* Hashes passwords using bcrypt.
+* Returns JWT token.
+
+**Login User**
+
+* Validates email/mobile + password.
+* Returns authentication token.
+
+**Get User Details**
+
+* Protected; returns logged-in user’s info.
+
+**Update/Delete User**
+
+* Only the authenticated user can modify their own account.
+
+**Search User by Name**
+
+* Protected; search users by name.
+
+---
+
+### 🗨️ **Discussion (`routes/discussion.js`)**
+
+* **Create Discussion** (requires auth)
+* **Fetch All Discussions**
+* **Update/Delete Discussion** (owner-only)
+* **Fetch Discussions by Tag**
+
+---
+
+### 💬 **Comments (`routes/comment.js`)**
+
+* **Add Comment** to a discussion
+* **Edit Comment** (owner-only)
+* **Delete Comment** (owner-only)
+* **Fetch Comments** for a discussion
+
+---
+
+### ❤️ **Likes (`routes/like.js`)**
+
+Supports liking/unliking:
+
+* Discussions
+* Comments
+
+---
+
+## 🌐 **API Endpoints Overview**
+
+### 👤 **User APIs**
+
+| No | Method | Endpoint                  | Description                     |
+| -- | ------ | ------------------------- | ------------------------------- |
+| 1  | POST   | `/api/auth/createuser`    | Register new user               |
+| 2  | POST   | `/api/auth/login`         | Login user & generate JWT       |
+| 3  | GET    | `/api/auth/getusers`      | Fetch all users (protected)     |
+| 4  | PUT    | `/api/auth/updateuser`    | Update logged-in user           |
+| 5  | DELETE | `/api/auth/deleteuser`    | Delete own account              |
+| 6  | GET    | `/api/auth/getuserbyname` | Search user by name (protected) |
+
+---
+
+### 🗨️ **Discussion APIs**
+
+| Method | Endpoint                                | Description            |
+| ------ | --------------------------------------- | ---------------------- |
+| POST   | `/api/discussion/creatediscussion`      | Create a discussion    |
+| GET    | `/api/discussion/fetchalldiscussions`   | Get all discussions    |
+| PUT    | `/api/discussion/updatediscussion/:id`  | Update discussion      |
+| DELETE | `/api/discussion/deletediscussion/:id`  | Delete discussion      |
+| POST   | `/api/discussion/fetchdiscussionsbytag` | Get discussions by tag |
+
+---
+
+### 💬 **Comment APIs**
+
+| Method | Endpoint                       | Description    |
+| ------ | ------------------------------ | -------------- |
+| POST   | `/api/comment/comment/:id`     | Add comment    |
+| PUT    | `/api/comment/editcomment/:id` | Edit comment   |
+| DELETE | `/api/comment/comment/:id`     | Delete comment |
+
+---
+
+### ❤️ **Like APIs**
+
+| Method | Endpoint                           | Description         |
+| ------ | ---------------------------------- | ------------------- |
+| POST   | `/api/like/likeondiscussion/:id`   | Like a discussion   |
+| POST   | `/api/like/unlikeondiscussion/:id` | Unlike a discussion |
+| POST   | `/api/like/likeoncomment/:id`      | Like a comment      |
+| POST   | `/api/like/unlikeoncomment/:id`    | Unlike a comment    |
+
+---
+
+## 📌 **Total APIs: 18**
+
+---
